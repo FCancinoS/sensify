@@ -96,6 +96,11 @@
     top: 70px;
     display: none;
   }
+ button, .flecha {
+  touch-action: manipulation; /* 👈 evita zoom en doble toque */
+  -webkit-user-select: none;  /* 👈 impide selección accidental */
+  user-select: none;
+}
 
   </style>
 </head>
@@ -412,12 +417,21 @@ document.addEventListener("touchstart", (e) => {
   if (e.touches.length > 1) e.preventDefault();
 }, { passive: false });
 
+// === [ BLOQUEO DE GESTOS TÁCTILES PARA EVITAR ZOOM EN MÓVILES ] ===
 let ultimaTocada = 0;
+
 document.addEventListener("touchend", (e) => {
   const ahora = new Date().getTime();
-  if (ahora - ultimaTocada <= 300) e.preventDefault();
+  if (ahora - ultimaTocada < 300) {
+    e.preventDefault(); // evita zoom por doble toque
+  }
   ultimaTocada = ahora;
 }, { passive: false });
+
+document.addEventListener("gesturestart", (e) => {
+  e.preventDefault(); // evita pinch-zoom si el navegador lo permite
+}, { passive: false });
+
 
 </script>
 </body>
