@@ -214,9 +214,9 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const sound = new Audio('assets/sound/coin.mp3');
-const failsound = new Audio('assets/sound/enserio.mp3');
-failsound.volume = 1.0;
+// const sound = new Audio('assets/sound/coin.mp3');
+// const failsound = new Audio('assets/sound/enserio.mp3');
+// failsound.volume = 1.0;
 
 const musicaFondo = new Audio('assets/sound/pixelland.mp3');
 musicaFondo.loop = true;
@@ -228,7 +228,7 @@ const gameOverSounds = [
 
 const jugador = {
   x: 70,
-  y: 510,
+  y: 450,
   width: 80,
   height: 145,
   img: new Image(),
@@ -297,7 +297,7 @@ function generarObjeto() {
 }
 
 function detectarColision(a, b) {
-  const buffer = b.tipo === "examen" ? 60 : 0; //aumentar buffer para disminuir colisiones, disminuir para
+  const buffer = b.tipo === "examen" ? 50 : 0; //aumentar buffer para disminuir colisiones, disminuir para
   //hacer el juego mas dificil
   return (
     a.x < b.x + b.width - buffer &&
@@ -320,10 +320,13 @@ function actualizar() {
     if (detectarColision(jugador, obj)) {
       if (obj.tipo === "plantita") {
         score++;
-        sound.play();
+        const coinSound = new Audio('assets/sound/coin.mp3');
+        coinSound.play();
       } else {
         examenes++;
-        failsound.play();
+       const failSound = new Audio('assets/sound/enserio.mp3');
+       failSound.volume = 1.0;
+       failSound.play();
         if (examenes >= 3 && !gameOver && !derrotaSonada) {
           derrotaSonada = true;
           gameOver = true;
