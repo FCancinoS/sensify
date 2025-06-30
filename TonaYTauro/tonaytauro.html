@@ -131,6 +131,7 @@
   overflow-y: auto;
 }
 
+
   </style>
 </head>
 <body>
@@ -150,7 +151,7 @@
     <div style="margin-top: 6px;">Mario World</div>
   </div>
 </div>
-  <h3 style="margin-bottom: 10px; text-align: center;">Selecciona Personaje</h3>
+ <h3 style="margin-top: 10px; margin-bottom: 10px;">Selecciona Personaje</h3>
   <div id="personajes" style="display: flex; gap: 20px; margin-bottom: 40px;">
   <div style="text-align: center;">
     <img src="assets/img/personaje.png" data-personaje="personaje.png" class="miniatura personaje-seleccionado" style="width: 80px; border: 4px solid yellow; cursor: pointer;" />
@@ -369,6 +370,7 @@ function togglePausa() {
   } else {
     iniciarGenerador();
     iniciarDificultad();
+    musicaFondo.play().catch(() => {}); // 🎵 <-- Este es el que reanuda la música
     actualizar();
   }
 }
