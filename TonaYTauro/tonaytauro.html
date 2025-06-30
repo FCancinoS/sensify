@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="16x16" href="img/favicons/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="img/favicons/favicon-32x32.png">
@@ -167,6 +167,15 @@ let personajeSeleccionado = "personaje.png";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+
+  // ⬇️ Ajuste dinámico del tamaño del canvas
+  function ajustarCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", ajustarCanvas);
+  ajustarCanvas(); // aplicar al inicio
+
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -184,7 +193,7 @@ const gameOverSounds = [
 
 const jugador = {
   x: 70,
-  y: 610,
+  y: 510,
   width: 80,
   height: 145,
   img: new Image(),
@@ -219,19 +228,22 @@ document.querySelectorAll("#personajes .miniatura").forEach(img => {
 
 document.getElementById("iniciarBtn").addEventListener("click", () => {
   document.querySelector("canvas").style.backgroundImage = `url('assets/img/${fondoSeleccionado}')`;
-  jugador.img.src = `assets/img/${personajeSeleccionado}`;
-
+  
   switch (fondoSeleccionado) {
     case "mexicocity.png": colorContador = "black"; colorTextoDerrota = "red"; break;
     case "tokyo3.png": colorContador = "white"; colorTextoDerrota = "white"; break;
     default: colorContador = "yellow"; colorTextoDerrota = "black"; break;
   }
-
+  
   document.getElementById("menuInicio").style.display = "none";
   musicaFondo.play().catch(() => {});
   iniciarGenerador();
   iniciarDificultad();
-  actualizar();
+  jugador.img.onload = () => {
+  actualizar(); // espera a que cargue el sprite antes de empezar
+  };
+  jugador.img.src = `assets/img/${personajeSeleccionado}`;
+
 });
 // === [ JUEGO: Lógica, Dibujo y Eventos ] ===
 
@@ -396,7 +408,16 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   musicaFondo.play().catch(() => {});
   actualizar();
 });
+document.addEventListener("touchstart", (e) => {
+  if (e.touches.length > 1) e.preventDefault();
+}, { passive: false });
 
+let ultimaTocada = 0;
+document.addEventListener("touchend", (e) => {
+  const ahora = new Date().getTime();
+  if (ahora - ultimaTocada <= 300) e.preventDefault();
+  ultimaTocada = ahora;
+}, { passive: false });
 
 </script>
 </body>
