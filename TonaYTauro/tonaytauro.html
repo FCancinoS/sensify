@@ -111,6 +111,25 @@
   -webkit-user-select: none;
   user-select: none;
 }
+#menuInicio {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 95vw;
+  max-width: 420px;
+  height: auto;
+  padding: 20px;
+  background: black;
+  color: white;
+  font-family: 'Press Start 2P';
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+  overflow-y: auto;
+}
 
   </style>
 </head>
@@ -276,7 +295,8 @@ function generarObjeto() {
 }
 
 function detectarColision(a, b) {
-  const buffer = b.tipo === "examen" ? 50 : 0;
+  const buffer = b.tipo === "examen" ? 60 : 0; //aumentar buffer para disminuir colisiones, disminuir para
+  //hacer el juego mas dificil
   return (
     a.x < b.x + b.width - buffer &&
     a.x + a.width > b.x + buffer &&
