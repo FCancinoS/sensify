@@ -106,12 +106,17 @@
   -webkit-user-select: none;  /* 👈 impide selección accidental */
   user-select: none;
 }
+  #zonaTactil {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
   </style>
 </head>
 <body>
 <div id="menuInicio" style="position: absolute; width: 100%; height: 100%; background: black; color: white; font-family: 'Press Start 2P'; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20;">
-  <h2 style="margin-bottom: 10px; text-align: center;">Selecciona Escenario</h2>
+  <h3 style="margin-bottom: 10px; text-align: center;">Selecciona Escenario</h3>
   <div id="escenarios" style="display: flex; gap: 20px; margin-bottom: 30px;">
   <div style="text-align: center;">
     <img src="assets/img/mexicocity.png" data-fondo="mexicocity.png" class="miniatura fondo-seleccionado" style="width: 120px; border: 4px solid yellow; cursor: pointer;" />
@@ -126,9 +131,7 @@
     <div style="margin-top: 6px;">Mario World</div>
   </div>
 </div>
-
-
-  <h2 style="margin-bottom: 10px; text-align: center;">Selecciona Personaje</h2>
+  <h3 style="margin-bottom: 10px; text-align: center;">Selecciona Personaje</h3>
   <div id="personajes" style="display: flex; gap: 20px; margin-bottom: 40px;">
   <div style="text-align: center;">
     <img src="assets/img/personaje.png" data-personaje="personaje.png" class="miniatura personaje-seleccionado" style="width: 80px; border: 4px solid yellow; cursor: pointer;" />
@@ -148,13 +151,14 @@
 
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <div id="zonaTactil" style="display: none; position: absolute; bottom: 0; left: 0; width: 100vw; height: 25vh; z-index: 15;"></div>
   <button id="pauseBtn">⏸ Pausa</button>
   <button id="resetBtn">🔄 Reiniciar</button>
 
-  <div class="control">
+  <!--div class="control">
     <button class="flecha izq" id="leftBtn"></button>
     <button class="flecha der" id="rightBtn"></button>
-  </div>
+  </div-->
 
 <script>
   // === [ GENERAL: Variables Globales y Recursos ] ===
@@ -237,6 +241,8 @@ document.querySelectorAll("#personajes .miniatura").forEach(img => {
 });
 
 document.getElementById("iniciarBtn").addEventListener("click", () => {
+  zonaTactil.style.display = "block";
+
   document.querySelector("canvas").style.backgroundImage = `url('assets/img/${fondoSeleccionado}')`;
   
   switch (fondoSeleccionado) {
@@ -299,6 +305,7 @@ function actualizar() {
         if (examenes >= 3 && !gameOver && !derrotaSonada) {
           derrotaSonada = true;
           gameOver = true;
+          zonaTactil.style.display = "none";
           reproducirSonidoDerrota();
           musicaFondo.pause();
           document.getElementById("resetBtn").style.display = "block";
@@ -374,16 +381,31 @@ function reproducirSonidoDerrota() {
   const index = Math.floor(Math.random() * gameOverSounds.length);
   new Audio(gameOverSounds[index]).play();
 }
+
+// === [ ZONA TÁCTIL para móviles: izquierda/derecha ] ===
+const zonaTactil = document.getElementById("zonaTactil");
+
+zonaTactil.addEventListener("touchstart", (e) => {
+  const x = e.touches[0].clientX;
+  const mitad = window.innerWidth / 2;
+
+  if (x < mitad) {
+    jugador.x = Math.max(jugador.x - 50, 0);
+  } else {
+    jugador.x = Math.min(jugador.x + 50, canvas.width - jugador.width);
+  }
+});
+
 // === [ CONTROLES y REINICIO ] ===
 
 // Controles táctiles
-document.getElementById("leftBtn").addEventListener("click", () => {
-  jugador.x = Math.max(jugador.x - 50, 0);
-});
+// document.getElementById("leftBtn").addEventListener("click", () => {
+//   jugador.x = Math.max(jugador.x - 50, 0);
+// });
 
-document.getElementById("rightBtn").addEventListener("click", () => {
-  jugador.x = Math.min(jugador.x + 50, canvas.width - jugador.width);
-});
+// document.getElementById("rightBtn").addEventListener("click", () => {
+//   jugador.x = Math.min(jugador.x + 50, canvas.width - jugador.width);
+// });
 
 // Controles con teclado
 document.addEventListener("keydown", (e) => {
