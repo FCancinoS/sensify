@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="16x16" href="img/favicons/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="img/favicons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="img/favicons/favicon-48x48.png">
+<link rel="icon" type="image/png" sizes="64x64" href="img/favicons/favicon-64x64.png">
+<link rel="icon" type="image/png" sizes="128x128" href="img/favicons/favicon-128x128.png">
+
+  <title>Tona Y Tauro</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background: #000;
+    }
+
+    canvas {
+      display: block;
+      background: url('assets/img/mexicocity.png') no-repeat center center;
+      background-size: cover;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .control {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    .flecha {
+      background: transparent;
+      border: none;
+      width: 60px;
+      height: 60px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+
+    .izq { background-image: url('assets/img/left-arrow.png'); }
+    .der { background-image: url('assets/img/right-arrow.png'); }
+
+    #pauseBtn, #resetBtn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      font-size: 16px;
+      padding: 8px 12px;
+    }
+
+    #resetBtn {
+      top: 60px;
+      display: none;
+    }
+    #pauseBtn, #resetBtn {
+    position: absolute;
+    right: 20px;
+    z-index: 10;
+    font-size: 16px;
+    padding: 10px 16px;
+    background-color: #2c2c2c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  #pauseBtn:hover,
+  #resetBtn:hover {
+    background-color: #3a3a3a;
+    transform: scale(1.05);
+  }
+
+  #pauseBtn {
+    top: 20px;
+  }
+
+  #resetBtn {
+    top: 70px;
+    display: none;
+  }
+
+  </style>
+</head>
+<body>
+<div id="menuInicio" style="position: absolute; width: 100%; height: 100%; background: black; color: white; font-family: 'Press Start 2P'; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 20;">
+  <h2 style="margin-bottom: 10px; text-align: center;">Selecciona Escenario</h2>
+  <div id="escenarios" style="display: flex; gap: 20px; margin-bottom: 30px;">
+  <div style="text-align: center;">
+    <img src="assets/img/mexicocity.png" data-fondo="mexicocity.png" class="miniatura fondo-seleccionado" style="width: 120px; border: 4px solid yellow; cursor: pointer;" />
+    <div style="margin-top: 6px;">CDMX</div>
+  </div>
+  <div style="text-align: center;">
+    <img src="assets/img/tokyo3.png" data-fondo="tokyo3.png" class="miniatura" style="width: 120px; border: 4px solid transparent; cursor: pointer;" />
+    <div style="margin-top: 6px;">Tokyo</div>
+  </div>
+  <div style="text-align: center;">
+    <img src="assets/img/fondo1-mario.png" data-fondo="fondo1-mario.png" class="miniatura" style="width: 120px; border: 4px solid transparent; cursor: pointer;" />
+    <div style="margin-top: 6px;">Mario World</div>
+  </div>
+</div>
+
+
+  <h2 style="margin-bottom: 10px; text-align: center;">Selecciona Personaje</h2>
+  <div id="personajes" style="display: flex; gap: 20px; margin-bottom: 40px;">
+  <div style="text-align: center;">
+    <img src="assets/img/personaje.png" data-personaje="personaje.png" class="miniatura personaje-seleccionado" style="width: 80px; border: 4px solid yellow; cursor: pointer;" />
+    <div style="margin-top: 6px;">Tauro</div>
+  </div>
+  <div style="text-align: center;">
+    <img src="assets/img/personaje2.png" data-personaje="personaje2.png" class="miniatura" style="width: 80px; border: 4px solid transparent; cursor: pointer;" />
+    <div style="margin-top: 6px;">Tona</div>
+  </div>
+</div>
+
+
+  <button id="iniciarBtn" style="font-size: 18px; padding: 12px 24px; background-color: #ffe600; border: none; border-radius: 8px; color: black; cursor: pointer; box-shadow: 0 4px 8px rgba(255,255,0,0.4); transition: transform 0.2s;">
+     Iniciar Juego
+  </button>
+</div>
+
+
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <button id="pauseBtn">⏸ Pausa</button>
+  <button id="resetBtn">🔄 Reiniciar</button>
+
+  <div class="control">
+    <button class="flecha izq" id="leftBtn"></button>
+    <button class="flecha der" id="rightBtn"></button>
+  </div>
+
+<script>
+  // === [ GENERAL: Variables Globales y Recursos ] ===
+let enPausa = false;
+let animFrameId = null;
+let velocidadCaida = 3.5;
+let tiempoGeneracion = 800;
+let generadorInterval = null;
+let dificultadInterval = null;
+
+let score = 0;
+let examenes = 0;
+let gameOver = false;
+let derrotaSonada = false;
+
+let colorContador = "white";
+let colorTextoDerrota = "red";
+let fondoSeleccionado = "mexicocity.png";
+let personajeSeleccionado = "personaje.png";
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const sound = new Audio('assets/sound/coin.mp3');
+const failsound = new Audio('assets/sound/enserio.mp3');
+failsound.volume = 1.0;
+
+const musicaFondo = new Audio('assets/sound/pixelland.mp3');
+musicaFondo.loop = true;
+musicaFondo.volume = 0.3;
+
+const gameOverSounds = [
+  'assets/sound/mariodown.mp3'
+];
+
+const jugador = {
+  x: 70,
+  y: 610,
+  width: 80,
+  height: 145,
+  img: new Image(),
+};
+
+jugador.img.src = `assets/img/${personajeSeleccionado}`;
+
+const plantitaImg = new Image();
+plantitaImg.src = "assets/img/plantita.png";
+
+const examenImg = new Image();
+examenImg.src = "assets/img/examen.png";
+
+let objetos = [];
+
+// === [ PRE-JUEGO: Menús y Selección Inicial ] ===
+document.querySelectorAll("#escenarios .miniatura").forEach(img => {
+  img.addEventListener("click", () => {
+    document.querySelectorAll("#escenarios .miniatura").forEach(el => el.style.border = "4px solid transparent");
+    img.style.border = "4px solid yellow";
+    fondoSeleccionado = img.dataset.fondo;
+  });
+});
+
+document.querySelectorAll("#personajes .miniatura").forEach(img => {
+  img.addEventListener("click", () => {
+    document.querySelectorAll("#personajes .miniatura").forEach(el => el.style.border = "4px solid transparent");
+    img.style.border = "4px solid yellow";
+    personajeSeleccionado = img.dataset.personaje;
+  });
+});
+
+document.getElementById("iniciarBtn").addEventListener("click", () => {
+  document.querySelector("canvas").style.backgroundImage = `url('assets/img/${fondoSeleccionado}')`;
+  jugador.img.src = `assets/img/${personajeSeleccionado}`;
+
+  switch (fondoSeleccionado) {
+    case "mexicocity.png": colorContador = "black"; colorTextoDerrota = "red"; break;
+    case "tokyo3.png": colorContador = "white"; colorTextoDerrota = "white"; break;
+    default: colorContador = "yellow"; colorTextoDerrota = "black"; break;
+  }
+
+  document.getElementById("menuInicio").style.display = "none";
+  musicaFondo.play().catch(() => {});
+  iniciarGenerador();
+  iniciarDificultad();
+  actualizar();
+});
+// === [ JUEGO: Lógica, Dibujo y Eventos ] ===
+
+function generarObjeto() {
+  const esPlantita = Math.random() < 0.6;
+  objetos.push({
+    x: Math.random() * (canvas.width - 120),
+    y: -120,
+    width: 60,
+    height: 60,
+    tipo: esPlantita ? "plantita" : "examen",
+    img: esPlantita ? plantitaImg : examenImg,
+  });
+}
+
+function detectarColision(a, b) {
+  const buffer = b.tipo === "examen" ? 50 : 0;
+  return (
+    a.x < b.x + b.width - buffer &&
+    a.x + a.width > b.x + buffer &&
+    a.y < b.y + b.height &&
+    a.y + a.height > b.y
+  );
+}
+
+function actualizar() {
+  if (gameOver || enPausa) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(jugador.img, jugador.x, jugador.y, jugador.width, jugador.height);
+
+  objetos.forEach((obj, i) => {
+    obj.y += velocidadCaida;
+    ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height);
+
+    if (detectarColision(jugador, obj)) {
+      if (obj.tipo === "plantita") {
+        score++;
+        sound.play();
+      } else {
+        examenes++;
+        failsound.play();
+        if (examenes >= 3 && !gameOver && !derrotaSonada) {
+          derrotaSonada = true;
+          gameOver = true;
+          reproducirSonidoDerrota();
+          musicaFondo.pause();
+          document.getElementById("resetBtn").style.display = "block";
+          detenerDificultad();
+          detenerGenerador();
+        }
+      }
+      objetos.splice(i, 1);
+    } else if (obj.y > canvas.height) {
+      objetos.splice(i, 1);
+    }
+  });
+
+  ctx.fillStyle = colorContador;
+  ctx.font = "20px Raleway";
+  ctx.fillText(`Motita: ${score / 10} gr  Exámenes: ${examenes}`, 20, 30);
+
+  if (!gameOver) {
+    animFrameId = requestAnimationFrame(actualizar);
+  } else {
+    molestar();
+  }
+}
+
+function molestar() {
+  ctx.textAlign = "center";
+  ctx.fillStyle = colorTextoDerrota;
+  ctx.font = "28px 'Press Start 2P'";
+  ctx.fillText("¿Estás viendo", canvas.width / 2, canvas.height / 2 - 20);
+  ctx.fillText("porno solo?", canvas.width / 2, canvas.height / 2 + 20);
+  ctx.fillText("¿En serio?", canvas.width / 2, canvas.height / 2 + 60);
+}
+
+function togglePausa() {
+  enPausa = !enPausa;
+  document.getElementById("pauseBtn").textContent = enPausa ? "▶ Reanudar" : "⏸ Pausa";
+  if (enPausa) {
+    musicaFondo.pause();
+    detenerGenerador();
+    detenerDificultad();
+  } else {
+    iniciarGenerador();
+    iniciarDificultad();
+    actualizar();
+  }
+}
+
+function iniciarGenerador() {
+  clearInterval(generadorInterval);
+  generadorInterval = setInterval(generarObjeto, tiempoGeneracion);
+}
+
+function detenerGenerador() {
+  clearInterval(generadorInterval);
+}
+
+function iniciarDificultad() {
+  clearInterval(dificultadInterval);
+  dificultadInterval = setInterval(() => {
+    if (!enPausa && !gameOver) {
+      if (velocidadCaida < 4.5) velocidadCaida += 1;
+      if (tiempoGeneracion > 200) tiempoGeneracion -= 50;
+      iniciarGenerador();
+    }
+  }, 5000);
+}
+
+function detenerDificultad() {
+  clearInterval(dificultadInterval);
+}
+
+function reproducirSonidoDerrota() {
+  const index = Math.floor(Math.random() * gameOverSounds.length);
+  new Audio(gameOverSounds[index]).play();
+}
+// === [ CONTROLES y REINICIO ] ===
+
+// Controles táctiles
+document.getElementById("leftBtn").addEventListener("click", () => {
+  jugador.x = Math.max(jugador.x - 50, 0);
+});
+
+document.getElementById("rightBtn").addEventListener("click", () => {
+  jugador.x = Math.min(jugador.x + 50, canvas.width - jugador.width);
+});
+
+// Controles con teclado
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowLeft") jugador.x = Math.max(jugador.x - 50, 0);
+  if (e.key === "ArrowRight") jugador.x = Math.min(jugador.x + 50, canvas.width - jugador.width);
+  if (e.key.toLowerCase() === "p") togglePausa();
+});
+
+// Botón de pausa
+document.getElementById("pauseBtn").addEventListener("click", togglePausa);
+
+// Botón de reinicio
+document.getElementById("resetBtn").addEventListener("click", () => {
+  objetos = [];
+  score = 0;
+  examenes = 0;
+  gameOver = false;
+  enPausa = false;
+  derrotaSonada = false;
+  jugador.x = 270;
+  velocidadCaida = 3.5;
+  tiempoGeneracion = 1600;
+
+  document.getElementById("pauseBtn").textContent = "⏸ Pausa";
+  document.getElementById("resetBtn").style.display = "none";
+
+  iniciarGenerador();
+  detenerDificultad();
+  iniciarDificultad();
+
+  musicaFondo.currentTime = 0;
+  musicaFondo.play().catch(() => {});
+  actualizar();
+});
+
+
+</script>
+</body>
+</html>
