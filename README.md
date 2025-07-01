@@ -65,3 +65,9 @@ Frantendo/
 │   └── img/               # Sprites, fondos y logos
 └── README.md              # Este documento
 ```
+
+## 🧠 Autor
+Creado con cafeína, ironía y espíritu arcade por Francisco Inspirado en los menús y lógicas de consolas portátiles retro.
+
+## 🛑 Nota legal
+Todos los sonidos, gráficos y referencias son de uso no comercial y creados o adaptados con fines educativos/experimentales.
