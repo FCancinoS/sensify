@@ -183,6 +183,7 @@
 
 <script>
   // === [ GENERAL: Variables Globales y Recursos ] ===
+let mostrarMensajeMolesto = false;
 let enPausa = false;
 let animFrameId = null;
 let velocidadCaida = 3.5;
@@ -225,6 +226,35 @@ musicaFondo.volume = 0.3;
 const gameOverSounds = [
   'assets/sound/mariodown.mp3'
 ];
+// 🎵 Precache de sonidos para evitar delay
+const coinSounds = Array.from({ length: 5 }, () => {
+  const a = new Audio('assets/sound/coin.mp3');
+  a.preload = 'auto';
+  return a;
+});
+const failSounds = Array.from({ length: 5 }, () => {
+  const a = new Audio('assets/sound/enserio.mp3');
+  a.volume = 1.0;
+  a.preload = 'auto';
+  return a;
+});
+
+let coinIndex = 0;
+let failIndex = 0;
+
+function reproducirCoin() {
+  const s = coinSounds[coinIndex];
+  s.currentTime = 0;
+  s.play();
+  coinIndex = (coinIndex + 1) % coinSounds.length;
+}
+
+function reproducirFail() {
+  const s = failSounds[failIndex];
+  s.currentTime = 0;
+  s.play();
+  failIndex = (failIndex + 1) % failSounds.length;
+}
 
 const jugador = {
   x: 70,
@@ -269,7 +299,7 @@ document.getElementById("iniciarBtn").addEventListener("click", () => {
   switch (fondoSeleccionado) {
     case "mexicocity.png": colorContador = "black"; colorTextoDerrota = "red"; break;
     case "tokyo3.png": colorContador = "white"; colorTextoDerrota = "white"; break;
-    default: colorContador = "yellow"; colorTextoDerrota = "black"; break;
+    default: colorContador = "black"; colorTextoDerrota = "black"; break;
   }
   
   document.getElementById("menuInicio").style.display = "none";
@@ -320,13 +350,17 @@ function actualizar() {
     if (detectarColision(jugador, obj)) {
       if (obj.tipo === "plantita") {
         score++;
-        const coinSound = new Audio('assets/sound/coin.mp3');
-        coinSound.play();
+        reproducirCoin();
+
       } else {
         examenes++;
-       const failSound = new Audio('assets/sound/enserio.mp3');
-       failSound.volume = 1.0;
-       failSound.play();
+        mostrarMensajeMolesto = true;
+        setTimeout(() => {
+          mostrarMensajeMolesto = false;
+        }, 3000); // ⏱️ 3 segundos
+
+       reproducirFail();
+
         if (examenes >= 3 && !gameOver && !derrotaSonada) {
           derrotaSonada = true;
           gameOver = true;
@@ -348,11 +382,15 @@ function actualizar() {
   ctx.font = "20px Raleway";
   ctx.fillText(`Motita: ${score / 10} gr  Exámenes: ${examenes}`, 20, 30);
 
-  if (!gameOver) {
-    animFrameId = requestAnimationFrame(actualizar);
-  } else {
-    molestar();
-  }
+  if (mostrarMensajeMolesto) {
+  molestar();
+}
+
+if (!gameOver) {
+  animFrameId = requestAnimationFrame(actualizar);
+}
+
+
 }
 
 function molestar() {
@@ -454,7 +492,7 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   jugador.x = 270;
   velocidadCaida = 3.5;
   tiempoGeneracion = 1600;
-
+  zonaTactil.style.display = "block";
   document.getElementById("pauseBtn").textContent = "⏸ Pausa";
   document.getElementById("resetBtn").style.display = "none";
 

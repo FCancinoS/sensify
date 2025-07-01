@@ -4,6 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Frantendo Games</title>
+
+    <style>
+        .menu-btn {
+  display: block;
+  width: 85vw;
+  max-width: 320px;
+  margin: 10px auto;
+  text-align: center;
+  padding: 12px 16px;
+  font-family: 'Press Start 2P', sans-serif;
+  font-size: 14px;
+  background-color: black;
+  color: white;
+  border: 2px solid #0ff;
+  box-shadow: 0 0 8px #0ff;
+}
+main {
+  height: 100vh; /* ocupar toda la altura de la ventana */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centro vertical */
+  align-items: center;     /* centro horizontal */
+}
+.menu-group {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* esto ahora sí centrará verticalmente */
+  align-items: center;
+  gap: 16px;
+}
+
+
+    </style>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/img/favicons/favicon-16x16.png">
@@ -14,20 +48,50 @@
 
 </head>
 <body>
-    <header>
-        <img src="./assets/img/frantendo_red.png" alt="" id="frantendo">
-    </header>
-    <main>
-        <button onclick="window.location.href='TonaYTauro/tonaytauro.html'" class="menu-btn brillante">Tona y Tauro</button>
-        <button onclick="window.location.href='#'" class="menu-btn brillante">Proximamente</button>
-        <button onclick="window.location.href='#'" class="menu-btn brillante">Proximamente</button>
-        <button onclick="window.location.href='#'" class="menu-btn brillante">Proximamente</button>
-        <button onclick="window.location.href='#'" class="menu-btn brillante">Proximamente</button>
+  <div id="pantallaInicio" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: black;
+    color: white;
+    font-family: 'Press Start 2P', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;">
+    <button id="startMusicBtn" class="menu-btn brillante">🎮 Presiona para comenzar</button>
+  </div>
 
-    </main>
+  <header>
+    <img src="./assets/img/frantendo.png" alt="" id="frantendo">
+  </header>
+  <main id="contenidoMenu" style="display: none;">
+     <div class="menu-group">
+         <button onclick="window.location.href='TonaYTauro/tonaytauro.html'" class="menu-btn brillante">Tona y Tauro</button>
+         <button class="menu-btn brillante">Proximamente</button>
+         <button class="menu-btn brillante">Proximamente</button>
+         <button class="menu-btn brillante">Proximamente</button>
+         <button class="menu-btn brillante">Proximamente</button>
+     </div>
+  </main>
 
-<footer>
+  <footer id="footerMenu" style="display: none;">
     <img src="./assets/img/marioroom.webp" alt="" id="mario">
-</footer>
+  </footer>
 </body>
+
+<script>
+  const musicaFondo = new Audio('assets/audio/fileselect.mp3');
+  musicaFondo.loop = true;
+  musicaFondo.volume = 0.3;
+  document.getElementById("startMusicBtn").addEventListener("click", () => {
+    musicaFondo.play().catch(() => {});
+    document.getElementById("pantallaInicio").style.display = "none";
+    document.getElementById("contenidoMenu").style.display = "block";
+    document.getElementById("footerMenu").style.display = "block";
+  });
+</script>
+
 </html>
+
