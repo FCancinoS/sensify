@@ -2,9 +2,9 @@
 
 ¡Bienvenido a **Frantendo**! Una mini consola virtual que celebra el espíritu de los clásicos con un toque de irreverencia y humor.
 
-![Frantendo Banner](assets/img/frantendo_red.png)
 
----
+<img src="assets/img/frantendo.png" alt="" width="300">
+
 
 ## 🕹️ ¿Qué es Frantendo?
 
