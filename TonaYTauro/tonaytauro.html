@@ -230,35 +230,14 @@ musicaFondo.volume = 0.3;
 const gameOverSounds = [
   'assets/sound/mariodown.mp3'
 ];
-// 🎵 Precache de sonidos para evitar delay
-const coinSounds = Array.from({ length: 5 }, () => {
-  const a = new Audio('assets/sound/coin.mp3');
-  a.preload = 'auto';
-  return a;
-});
-const failSounds = Array.from({ length: 5 }, () => {
-  const a = new Audio('assets/sound/enserio.mp3');
-  a.volume = 1.0;
-  a.preload = 'auto';
-  return a;
-});
 
-let coinIndex = 0;
-let failIndex = 0;
 
-function reproducirCoin() {
-  const s = coinSounds[coinIndex];
-  s.currentTime = 0;
-  s.play();
-  coinIndex = (coinIndex + 1) % coinSounds.length;
-}
+let coinSound = new Audio('assets/sound/coin.mp3');
+let failSound = new Audio('assets/sound/enserio.mp3');
 
-function reproducirFail() {
-  const s = failSounds[failIndex];
-  s.currentTime = 0;
-  s.play();
-  failIndex = (failIndex + 1) % failSounds.length;
-}
+failSound.volume = 1.0;
+coinSound.volume = 0.5;
+
 
 const jugador = {
   x: 70,
@@ -354,7 +333,7 @@ function actualizar() {
     if (detectarColision(jugador, obj)) {
       if (obj.tipo === "plantita") {
         score++;
-        reproducirCoin();
+        coinSound.play();
 
       } else {
         examenes++;
@@ -363,7 +342,7 @@ function actualizar() {
           mostrarMensajeMolesto = false;
         }, 3000); // ⏱️ 3 segundos
 
-       reproducirFail();
+        failSound.play();
 
         if (examenes >= 3 && !gameOver && !derrotaSonada) {
           derrotaSonada = true;
