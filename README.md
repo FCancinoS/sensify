@@ -1,14 +1,14 @@
-# 🎮 Frantendo Games
+# 🎮 Sensify Games
 
-¡Bienvenido a **Frantendo**! Una mini consola virtual que celebra el espíritu de los clásicos con un toque de irreverencia y humor.
-
-
-<img src="assets/img/frantendo.png" alt="" width="300">
+¡Bienvenido a **sensify**! Una mini consola virtual que celebra el espíritu de los clásicos con un toque de irreverencia y humor.
 
 
-## 🕹️ ¿Qué es Frantendo?
+<img src="assets/img/sensifyblue.png" alt="" width="300">
 
-**Frantendo** es un compilado de juegos desarrollados en HTML5/JavaScript con estética retro pixelada, pensados para ejecutarse en navegador, especialmente optimizados para pantallas táctiles.
+
+## 🕹️ ¿Qué es sensify?
+
+**sensify** es un compilado de juegos desarrollados en HTML5/JavaScript con estética retro pixelada, pensados para ejecutarse en navegador, especialmente optimizados para pantallas táctiles.
 
 ---
 
@@ -31,7 +31,7 @@
 
 ## 🚀 Cómo usar
 Entrar desde el móvil a
-[https://fcancinos.github.io/frantendo/](https://fcancinos.github.io/frantendo/)
+[https://fcancinos.github.io/sensify/](https://fcancinos.github.io/sensify/)
 
 ---
 
@@ -55,7 +55,7 @@ Entrar desde el móvil a
 ## 📂 Estructura del proyecto
 
 ```bash
-Frantendo/
+sensify/
 │
 ├── index.html             # Menú principal
 ├── TonaYTauro/            # Carpeta del primer juego
