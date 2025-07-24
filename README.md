@@ -1,14 +1,14 @@
 # 🎮 Sensify Games
 
-¡Bienvenido a **sensify**! Una mini consola virtual que celebra el espíritu de los clásicos con un toque de irreverencia y humor.
+¡Bienvenido a **Sensify**! Una mini consola virtual que celebra el espíritu de los clásicos con un toque de irreverencia y humor.
 
 
 <img src="assets/img/sensifyblue.png" alt="" width="300">
 
 
-## 🕹️ ¿Qué es sensify?
+## 🕹️ ¿Qué es Sensify?
 
-**sensify** es un compilado de juegos desarrollados en HTML5/JavaScript con estética retro pixelada, pensados para ejecutarse en navegador, especialmente optimizados para pantallas táctiles.
+**Sensify** es un compilado de juegos desarrollados en HTML5/JavaScript con estética retro pixelada, pensados para ejecutarse en navegador, especialmente optimizados para pantallas táctiles.
 
 ---
 
